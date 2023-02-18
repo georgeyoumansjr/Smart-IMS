@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm,PasswordChangeForm, UserC
 
 from django.contrib.auth.models import User
 from more_itertools import quantify
-from .models import Category, Product, Stock, Invoice, Invoice_Item
+from .models import Category, Product, Stock, Invoice, Invoice_Item, Store, StoreProduct
 from datetime import datetime
 
 class UserRegistration(UserCreationForm):
@@ -75,7 +75,7 @@ class UpdatePasswords(PasswordChangeForm):
 class SaveCategory(forms.ModelForm):
     name = forms.CharField(max_length="250")
     description = forms.Textarea()
-    status = forms.ChoiceField(choices=[('1','Active'),('2','Inactive')])
+    category = forms.ModelChoiceField(queryset=Category.objects.filter(status='1'))
 
     class Meta:
         model = Category
@@ -95,6 +95,32 @@ class SaveCategory(forms.ModelForm):
             return name
             # raise forms.ValidationError(f"{name} Category Already Exists.")
         raise forms.ValidationError(f"{name} Category Already Exists.")
+
+
+class SaveStore(forms.ModelForm):
+    name = forms.CharField(max_length="250")
+    address = forms.CharField(max_length="500")
+    category = forms.ModelChoiceField(queryset=Category.objects.filter())
+
+    class Meta:
+        model = Store
+        fields = ('name','address','category')
+
+    def clean_name(self):
+        id = self.instance.id if self.instance.id else 0
+        name = self.cleaned_data['name']
+        # print(int(id) > 0)
+        # raise forms.ValidationError(f"{name} Store Already Exists.")
+        try:
+            if int(id) > 0:
+                store = Store.objects.exclude(id=id).get(name = name)
+            else:
+                store = Store.objects.get(name = name)
+        except:
+            return name
+            # raise forms.ValidationError(f"{name} Store Already Exists.")
+        raise forms.ValidationError(f"{name} Store Already Exists.")
+
 
 class SaveProduct(forms.ModelForm):
     name = forms.CharField(max_length="250")

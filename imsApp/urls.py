@@ -37,6 +37,10 @@ urlpatterns = [
     path('save_sales',views.save_sales, name="save-sales"),
     path('invoices',views.invoices,name='invoice-page'),
     path('delete_invoice',views.delete_invoice,name='delete-invoice'),
-    
+    path('store',views.store_mgt,name='store-page'),
+    path('manage_store',views.manage_store,name='manage-store'),
+    path('save_store',views.save_store,name='save-store'),
+    path('manage_store/<int:pk>',views.manage_store,name='manage-store-pk'),
+    path('delete_store',views.delete_store,name='delete-store'),
 
 ]

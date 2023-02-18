@@ -8,7 +8,7 @@ import json
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.http import HttpResponse
-from imsApp.forms import SaveStock, UserRegistration, UpdateProfile, UpdatePasswords, SaveCategory, SaveProduct, SaveInvoice, SaveInvoiceItem
+from imsApp.forms import SaveStock, UserRegistration, UpdateProfile, UpdatePasswords, SaveCategory, SaveStore ,SaveProduct, SaveInvoice, SaveInvoiceItem
 from imsApp.models import Category, Product, Stock, Invoice, Invoice_Item,Store, StoreProduct
 from cryptography.fernet import Fernet
 from django.conf import settings
@@ -125,6 +125,14 @@ def category_mgt(request):
     return render(request, 'category_mgt.html', context)
 
 @login_required
+def store_mgt(request):
+    context['page_title'] = "Store"
+    stores = Store.objects.all()
+    context['stores'] = stores
+
+    return render(request, 'store_mgt.html', context)
+
+@login_required
 def save_category(request):
     resp = {'status':'failed','msg':''}
     if request.method == 'POST':
@@ -149,6 +157,30 @@ def save_category(request):
     return HttpResponse(json.dumps(resp), content_type = 'application/json')
 
 @login_required
+def save_store(request):
+    resp = {'status':'failed','msg':''}
+    if request.method == 'POST':
+        if (request.POST['id']).isnumeric():
+            store = Store.objects.get(pk=request.POST['id'])
+        else:
+            store = None
+        if store is None:
+            form = SaveStore(request.POST)
+        else:
+            form = SaveStore(request.POST, instance= store)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Store has been saved successfully.')
+            resp['status'] = 'success'
+        else:
+            for fields in form:
+                for error in fields.errors:
+                    resp['msg'] += str(error + "<br>")
+    else:
+        resp['msg'] = 'No data has been sent.'
+    return HttpResponse(json.dumps(resp), content_type = 'application/json')
+
+@login_required
 def manage_category(request, pk=None):
     context['page_title'] = "Manage Category"
     if not pk is None:
@@ -158,6 +190,19 @@ def manage_category(request, pk=None):
         context['category'] = {}
 
     return render(request, 'manage_category.html', context)
+
+@login_required
+def manage_store(request, pk=None):
+    context['page_title'] = "Manage store"
+    context['category'] = Category.objects.all()
+    if not pk is None:
+        store = Store.objects.get(id = pk)
+        context['store'] = store
+    else:
+        context['store'] = {}
+
+    return render(request, 'manage_store.html', context)
+
 
 @login_required
 def delete_category(request):
@@ -177,7 +222,26 @@ def delete_category(request):
         resp['msg'] = 'Category has failed to delete'
     
     return HttpResponse(json.dumps(resp), content_type="application/json")
-        
+
+
+@login_required
+def delete_store(request):
+    resp = {'status':'failed','msg':''}
+    if request.method == 'POST':
+        try:
+            store = Store.objects.get(id = request.POST['id'])
+            store.delete()
+            messages.success(request, 'Store has been deleted successfully')
+            resp['status'] = 'success'
+        except Exception as err:
+            resp['msg'] = 'Store has failed to delete'
+            print(err)
+
+    else:
+        resp['msg'] = 'Store has failed to delete'
+    
+    return HttpResponse(json.dumps(resp), content_type="application/json")
+
 # product
 @login_required
 def product_mgt(request):

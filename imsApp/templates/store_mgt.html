@@ -62,16 +62,16 @@
 <script>
     $(function() {
         $('#add_new').click(function() {
-            uni_modal('<i class="fa fa-plus"></i> Add Category', '{% url "manage-category" %}', 'modal-md')
+            uni_modal('<i class="fa fa-plus"></i> Add Store', '{% url "manage-store" %}', 'modal-md')
         })
         $('.edit-data').click(function() {
-            uni_modal('<i class="fa fa-edit"></i> Edit Category', '{% url "manage-category" %}/' + $(this).attr('data-id'), 'modal-md')
+            uni_modal('<i class="fa fa-edit"></i> Edit Store', '{% url "manage-store" %}/' + $(this).attr('data-id'), 'modal-md')
         })
         $('.delete-data').click(function() {
-            _conf("Are you sure to delete this Category permanently?", "delete_category", [$(this).attr('data-id')])
+            _conf("Are you sure to delete this Store permanently?", "delete_store", [$(this).attr('data-id')])
         })
 
-        $('#category-list').DataTable({
+        $('#store-list').DataTable({
             columnDefs: [{
                 orderable: false,
                 targets: 5
@@ -93,7 +93,7 @@
         el.addClass("alert alert-danger err-msg")
         el.hide()
         $.ajax({
-            url: '{% url "delete-category" %}',
+            url: '{% url "delete-store" %}',
             headers: {
                 'X-CSRFToken': "{{csrf_token}}"
             },
