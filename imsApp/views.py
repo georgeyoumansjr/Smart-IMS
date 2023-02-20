@@ -1,6 +1,6 @@
 from email import message
 from unicodedata import category
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from ims_django.settings import MEDIA_ROOT, MEDIA_URL
@@ -8,7 +8,7 @@ import json
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.http import HttpResponse
-from imsApp.forms import SaveStock, UserRegistration, UpdateProfile, UpdatePasswords, SaveCategory, SaveStore ,SaveProduct, SaveInvoice, SaveInvoiceItem
+from imsApp.forms import SaveStock, UserRegistration, UpdateProfile, UpdatePasswords, SaveCategory, SaveStore ,SaveProduct, SaveInvoice, SaveInvoiceItem, StoreProductForm
 from imsApp.models import Category, Product, Stock, Invoice, Invoice_Item,Store, StoreProduct
 from cryptography.fernet import Fernet
 from django.conf import settings
@@ -115,6 +115,8 @@ def profile(request):
     return render(request, 'profile.html',context)
 
 
+
+
 # Category
 @login_required
 def category_mgt(request):
@@ -179,6 +181,13 @@ def save_store(request):
     else:
         resp['msg'] = 'No data has been sent.'
     return HttpResponse(json.dumps(resp), content_type = 'application/json')
+
+@login_required
+def view_store(request,pk):
+    store = get_object_or_404(Store, pk=pk)
+    store_products = store.storeproduct_set.all()
+    return render(request, 'view_store.html', {'store': store, 'store_products': store_products})
+
 
 @login_required
 def manage_category(request, pk=None):
@@ -346,6 +355,38 @@ def manage_stock(request,pid = None ,pk = None):
         context['stock'] = stock
     
     return render(request, 'manage_stock.html', context )
+
+
+@login_required
+def addProductStore(request, pk):
+    resp = {'status':'failed','msg':''}
+    if request.method == 'POST':
+        if (request.POST['id']).isnumeric():
+            store_products = StoreProduct.objects.get(pk=request.POST['id'])
+        else:
+            store_products = None
+        if store_products is None:
+            form = StoreProductForm(request.POST)
+        else:
+            form = SaveStock(request.POST, instance= stock)
+        if form.is_valid():
+            store = Store.objects.get(id=pk)
+            product = form.cleaned_data['product']
+            stock = form.cleaned_data['stock']
+            price = form.cleaned_data['price']
+            store_product = StoreProduct(store=store, product=product, stock=stock, price=price)
+            store_product.save()
+            store_product.products.add(store_product)
+            messages.success(request, 'Stock has been saved successfully.')
+            resp['status'] = 'success'
+        else:
+            for fields in form:
+                for error in fields.errors:
+                    resp['msg'] += str(error + "<br>")
+    
+    else:
+        resp['msg'] = 'No data has been sent.'
+    return HttpResponse(json.dumps(resp), content_type = 'application/json')
 
 @login_required
 def save_stock(request):

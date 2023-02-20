@@ -121,6 +121,31 @@ class SaveStore(forms.ModelForm):
             # raise forms.ValidationError(f"{name} Store Already Exists.")
         raise forms.ValidationError(f"{name} Store Already Exists.")
 
+class StoreProductForm(forms.ModelForm):
+    product = forms.ModelChoiceField(queryset=Product.objects.filter(status='1'), empty_label=None)
+    stock = forms.FloatField(required=False)
+    price = forms.FloatField()
+
+    class Meta:
+        model = StoreProduct
+        fields = ('product', 'stock', 'price')
+
+    def clean(self):
+        cleaned_data = super().clean()
+        product = cleaned_data.get('product')
+        stock = cleaned_data.get('stock')
+
+        if not product or not stock:
+            return cleaned_data
+
+        if stock < 0:
+            self.add_error('stock', 'Stock quantity cannot be negative')
+
+        if product.count_inventory() < stock:
+            self.add_error('stock', 'Insufficient stock for this product')
+
+        return cleaned_data
+
 
 class SaveProduct(forms.ModelForm):
     name = forms.CharField(max_length="250")
@@ -217,7 +242,5 @@ class SaveInvoiceItem(forms.ModelForm):
             return int(qty)
         raise forms.ValidationError("Quantity is not valid")
     
-
-
 
 
