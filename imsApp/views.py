@@ -186,7 +186,7 @@ def save_store(request):
 def view_store(request,pk):
     store = get_object_or_404(Store, pk=pk)
     store_products = store.storeproduct_set.all()
-    return render(request, 'view_store.html', {'store': store, 'store_products': store_products})
+    return render(request, 'view_store.html', {'page_title':"Add Prodcuts to Store",'store': store, 'store_products': store_products})
 
 
 @login_required
@@ -211,6 +211,18 @@ def manage_store(request, pk=None):
         context['store'] = {}
 
     return render(request, 'manage_store.html', context)
+
+@login_required
+def manage_store_product(request, pk=None):
+    context['page_title'] = "Manage store Product"
+    context['products'] = Product.objects.all()
+    if not pk is None:
+        store = Store.objects.get(id = pk)
+        context['store'] = store
+    else:
+        context['store'] = {}
+
+    return render(request, 'manage_store_product.html', context)
 
 
 @login_required
@@ -361,14 +373,7 @@ def manage_stock(request,pid = None ,pk = None):
 def addProductStore(request, pk):
     resp = {'status':'failed','msg':''}
     if request.method == 'POST':
-        if (request.POST['id']).isnumeric():
-            store_products = StoreProduct.objects.get(pk=request.POST['id'])
-        else:
-            store_products = None
-        if store_products is None:
-            form = StoreProductForm(request.POST)
-        else:
-            form = SaveStock(request.POST, instance= stock)
+        form = StoreProductForm(request.POST)
         if form.is_valid():
             store = Store.objects.get(id=pk)
             product = form.cleaned_data['product']
@@ -376,7 +381,7 @@ def addProductStore(request, pk):
             price = form.cleaned_data['price']
             store_product = StoreProduct(store=store, product=product, stock=stock, price=price)
             store_product.save()
-            store_product.products.add(store_product)
+            # store_product.products.add(store_product)
             messages.success(request, 'Stock has been saved successfully.')
             resp['status'] = 'success'
         else:

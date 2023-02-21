@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.dispatch import receiver
 from more_itertools import quantify
 from django.db.models import Sum
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -83,6 +84,7 @@ class Store(models.Model):
     products = models.ManyToManyField(Product, through='StoreProduct')
     date_created = models.DateTimeField(default=timezone.now)
     date_updated = models.DateTimeField(auto_now=True)
+    owner = models.ForeignKey(User, default=1,on_delete=models.CASCADE ,blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -90,8 +92,11 @@ class Store(models.Model):
 class StoreProduct(models.Model):
     store = models.ForeignKey(Store, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    stock = models.ForeignKey(Stock, on_delete=models.CASCADE, blank=True, null=True)
+    stock = models.FloatField(default=0,blank=True, null=True)
     price = models.FloatField(default=0)
+
+    # class Meta:
+    #     unique_together = ["product","store"]
 
     def __str__(self):
         return f"{self.store.name} - {self.product.name}"

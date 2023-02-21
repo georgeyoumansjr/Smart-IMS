@@ -101,10 +101,11 @@ class SaveStore(forms.ModelForm):
     name = forms.CharField(max_length="250")
     address = forms.CharField(max_length="500")
     category = forms.ModelChoiceField(queryset=Category.objects.filter())
+    owner = forms.ModelChoiceField(queryset=User.objects.filter())
 
     class Meta:
         model = Store
-        fields = ('name','address','category')
+        fields = ('name','address','category','owner')
 
     def clean_name(self):
         id = self.instance.id if self.instance.id else 0

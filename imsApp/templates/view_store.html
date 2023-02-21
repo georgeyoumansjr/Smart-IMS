@@ -37,11 +37,14 @@
                         <tr>
                             <td class="px-2 py-1 align-middle text-center">{{ forloop.counter }}</td>
                             <td class="px-2 py-1 align-middle">{{ product }}</td>
-                            <td class="px-2 py-1 align-middle text-end">{{ product.count_Store }}</td>
+                            <td class="px-2 py-1 align-middle text-end">{{ product.stock }}</td>
                             <td class="px-2 py-1 align-middle text-center">
-                                <a class="btn btn-outline-primary btn-sm" href="{% url 'Store-history-page' product.pk %}" data-id="{{ product.pk }}" title="View History">
-                                    <i class="fa fa-eye text-dark"></i>
+                                <a class="btn btn-outline-primary btn-sm edit-data" href="javascript:void(0)" data-id="{{ prouct.pk }}" title="Edit">
+                                    <i class="fa fa-edit"></i>
                                 </a>
+                                <button class="btn btn-outline-danger btn-sm delete-data" type="button" data-id="{{ prouct.pk }}" title="Delete">
+                                    <i class="fa fa-trash"></i>
+                                </button>
                             </td>
                         </tr>
                         {% endfor %}
@@ -55,7 +58,7 @@
 <script>
     $(function() {
         $('#add_new').click(function() {
-            uni_modal('<i class="fa fa-plus"></i> Add Store', '{% url "store-add-p" pk=store.id %}', 'modal-md')
+            uni_modal('<i class="fa fa-plus"></i> Add Store', '{% url "manage-store-p" pk=store.id %}', 'modal-md')
         })
         $('#product-list').DataTable({
             columnDefs: [{
