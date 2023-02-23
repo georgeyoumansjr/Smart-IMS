@@ -2,23 +2,24 @@
 <div class="container-fluid">
     <form action=" " id="store-p-form">
         {% csrf_token %}
-        <input type="hidden" name="id" value="{{ store.id }}">
+        <input type="hidden" name="id" value="{{ storeP.id }}">
         <div class="form-group mb-3">
             <label for="price" class="control-label">Price</label>
-            <input class="form-control rounded-0 text-end" name="price" id="price" type="number" step="any">{{ store.price }}</input>
+            <input class="form-control rounded-0 text-end" name="price" id="price" type="number" step="any" value="{{ storeP.price }}"></input>
         </div>
         <div class="form-group mb-3 ">
             <label for="stock" class="control-label">stock</label>
-            <input type="number" step="any" class="form-control rounded-0 text-end" id="stock" name="stock" value="{{ stock.quantity }}" required>
+            <input type="number" step="any" class="form-control rounded-0 text-end" id="stock" name="stock" value="{{ storeP.stock }}" required>
         </div>
         <div class="form-group mb-3 ">
             <label for="product" class="control-label">Products</label>
             <select name="product" id="product" class="form-select rounded-0">
                 {% for choice in products %}
-                
-                    <option value="{{ choice.id }}">{{ choice.name }}</option>
-                
-                
+                    {% if choice.id == storeP.product.id  %}
+                        <option value="{{ choice.id }}" selected>{{ choice.name }}</option>
+                    {% else %}
+                        <option value="{{ choice.id }}" >{{ choice.name }}</option>
+                    {% endif %}
                 {% endfor %}
             </select>
         </div>

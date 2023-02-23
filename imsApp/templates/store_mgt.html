@@ -27,6 +27,7 @@
                             <th class="px-2 py-2 text-center">Name</th>
                             <th class="px-2 py-2 text-center">Address</th>
                             <th class="px-2 py-2 text-center">Category</th>
+                            <th class="px-2 py-2 text-center">Owner</th>
                             <th class="px-2 py-2 text-center">Action</th>
                         </tr>
                     </thead>
@@ -35,12 +36,15 @@
                         <tr>
                             <td class="px-2 py-1 align-middle">{{ forloop.counter }}</td>
                             <td class="px-2 py-1 align-middle">{{ store.date_created|date:"Y-m-d h:i A" }}</td>
-                            <td class="px-2 py-1 align-middle"><a href="{% url 'store-detail' store.id %}">{{ store.name }}</a></td>
+                            <td class="px-1 py-1 align-middle"><a href="{% url 'store-detail' store.id %}">{{ store.name }}</a></td>
                             <td class="px-2 py-1 align-middle">
                                 <p class="m-0 text-truncate">{{ store.address }}</p>
                             </td>
                             <td class="px-1 py-1 align-middle text-center">
                                 {{ store.category }}
+                            </td>
+                            <td class="px-1 py-1 align-middle text-center">
+                                {{ store.owner }}
                             </td>
                             <td class="px-2 py-1 align-middle text-center">
                                 <a class="btn btn-outline-primary btn-sm edit-data" href="javascript:void(0)" data-id="{{ store.pk }}" title="Edit">
@@ -85,7 +89,7 @@
         })
     })
 
-    function delete_category($id) {
+    function z($id) {
         start_loader();
         var _this = $(this)
         $('.err-msg').remove();

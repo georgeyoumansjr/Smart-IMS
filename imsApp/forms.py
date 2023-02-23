@@ -101,7 +101,7 @@ class SaveStore(forms.ModelForm):
     name = forms.CharField(max_length="250")
     address = forms.CharField(max_length="500")
     category = forms.ModelChoiceField(queryset=Category.objects.filter())
-    owner = forms.ModelChoiceField(queryset=User.objects.filter())
+    owner = forms.ModelChoiceField(queryset=User.objects.filter(is_superuser=0))
 
     class Meta:
         model = Store

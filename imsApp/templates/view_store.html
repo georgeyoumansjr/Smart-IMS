@@ -5,10 +5,11 @@
             <div class="d-flex w-100 align-items-center justify-content-between">
                <div>
                    <h4 class="card-title fw-bold">{{ store.name }} Store</h4>
-                   <p class="text-muted font-weight-bold">{{ store.category }}</p>
-                   <div class="mt-2">
-                       <h5 class="font-weight-bold">Address: {{ store.address }}</h5>
+                   <p class="text-muted font-weight-bold"><span class="font-weight-normal">Owned By:</span> {{ store.owner }}</p>
+                   <div class="mt-1">
+                       <h6 class="font-weight-bold">Address: {{ store.address }}</h5>
                    </div>
+                   <span class="badge bg-secondary">{{ store.category }}</span>
                </div>
                <div>
                 <a class="btn btn-primary rounded-0 bg-gradient btn-sm" id='add_new'>Add Products to store</a>
@@ -26,23 +27,25 @@
                     </colgroup>
                     <thead>
                         <tr class="bg-gradient bg-primary bg-opacity-50 text-light">
-                            <th class="px-2 py-2 text-center">#</th>
+                            <th class="px-1 py-2 text-center">#</th>
                             <th class="px-2 py-2 text-center">Product</th>
-                            <th class="px-2 py-2 text-center">Available Stock</th>
+                            <th class="px-1 py-2 text-center">Available Stock</th>
+                            <th class="px-1 py-2 text-center">Price</th>
                             <th class="px-2 py-2 text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for product in store_products %}
                         <tr>
-                            <td class="px-2 py-1 align-middle text-center">{{ forloop.counter }}</td>
+                            <td class="px-1 py-1 align-middle text-center">{{ forloop.counter }}</td>
                             <td class="px-2 py-1 align-middle">{{ product }}</td>
-                            <td class="px-2 py-1 align-middle text-end">{{ product.stock }}</td>
+                            <td class="px-1 py-1 align-middle text-end">{{ product.stock }}</td>
+                            <td class="px-1 py-1 align-middle text-end">{{ product.price }}</td>
                             <td class="px-2 py-1 align-middle text-center">
-                                <a class="btn btn-outline-primary btn-sm edit-data" href="javascript:void(0)" data-id="{{ prouct.pk }}" title="Edit">
+                                <a class="btn btn-outline-primary btn-sm edit-data" href="javascript:void(0)" data-id="{{ product.pk }}" title="Edit">
                                     <i class="fa fa-edit"></i>
                                 </a>
-                                <button class="btn btn-outline-danger btn-sm delete-data" type="button" data-id="{{ prouct.pk }}" title="Delete">
+                                <button class="btn btn-outline-danger btn-sm delete-data" type="button" data-id="{{ product.pk }}" title="Delete">
                                     <i class="fa fa-trash"></i>
                                 </button>
                             </td>
@@ -60,6 +63,13 @@
         $('#add_new').click(function() {
             uni_modal('<i class="fa fa-plus"></i> Add Store', '{% url "manage-store-p" pk=store.id %}', 'modal-md')
         })
+        $('.edit-data').click(function() {
+            var url = '{% url "manage-store-p-pid" pk=store.id pid=123 %}'.replace(/123/,$(this).attr('data-id'));
+            uni_modal('<i class="fa fa-edit"></i> Edit Store', url, 'modal-md')
+        })
+        $('.delete-data').click(function() {
+            _conf("Are you sure to delete this Product permanently?", "delete_store_p", [$(this).attr('data-id')])
+        })
         $('#product-list').DataTable({
             columnDefs: [{
                 orderable: false,
@@ -73,6 +83,43 @@
             }
         })
     })
+    function delete_store_p($id) {
+        start_loader();
+        var _this = $(this)
+        $('.err-msg').remove();
+        var el = $('<div>')
+        el.addClass("alert alert-danger err-msg")
+        el.hide()
+        $.ajax({
+            url: '{% url "store-delete-p" %}',
+            headers: {
+                'X-CSRFToken': "{{csrf_token}}"
+            },
+            method: 'POST',
+            data: {
+                id: $id
+            },
+            dataType: 'json',
+            error: err => {
+                console.log(err)
+                el.text('An error occurred.')
+                el.show('slow')
+                end_loader()
+            },
+            success: function(resp) {
+                if (resp.status == 'success') {
+                    location.reload()
+                } else if (!!resp.msg) {
+                    el.text('An error occurred.')
+                    el.show('slow')
+                } else {
+                    el.text('An error occurred.')
+                    el.show('slow')
+                }
+                end_loader()
+            }
+        })
+    }
     
 </script>
 {% endblock ScriptBlock %}

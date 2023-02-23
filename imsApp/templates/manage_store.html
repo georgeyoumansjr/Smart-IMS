@@ -9,16 +9,21 @@
         </div>
         <div class="form-group mb-3">
             <label for="address" class="control-label">Address</label>
-            <input class="form-control rounded-0" name="address" id="address" rows="5" required>{{ store.address }}</input>
+            <input class="form-control rounded-0" name="address" id="address" rows="5" value="{{ store.address }}" required></input>
         </div>
         <div class="form-group mb-3 ">
             <label for="category" class="control-label">Category</label>
             <select name="category" id="category" class="form-select rounded-0">
                 {% for choice in category %}
-                
                     <option value="{{ choice.id }}">{{ choice.name }}</option>
-                
-                
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group mb-3 ">
+            <label for="owner" class="control-label">Owner</label>
+            <select name="owner" id="owner" class="form-select rounded-0">
+                {% for choice in users %}
+                    <option value="{{ choice.id }}">{{ choice.username }}  {{ choice.firstname }} {{ choice.lastname }}</option>
                 {% endfor %}
             </select>
         </div>

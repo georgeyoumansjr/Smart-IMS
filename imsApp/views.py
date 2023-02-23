@@ -49,6 +49,8 @@ def home(request):
     context['categories'] = Category.objects.count()
     context['products'] = Product.objects.count()
     context['sales'] = Invoice.objects.count()
+    context['stores'] = Store.objects.count()
+    context['users'] = User.objects.filter(is_superuser=0).count()
     return render(request, 'home.html',context)
 
 def registerUser(request):
@@ -201,9 +203,10 @@ def manage_category(request, pk=None):
     return render(request, 'manage_category.html', context)
 
 @login_required
-def manage_store(request, pk=None):
+def manage_store(request, pk=None, pid=None):
     context['page_title'] = "Manage store"
     context['category'] = Category.objects.all()
+    context['users'] = User.objects.filter(is_superuser=0)
     if not pk is None:
         store = Store.objects.get(id = pk)
         context['store'] = store
@@ -213,14 +216,19 @@ def manage_store(request, pk=None):
     return render(request, 'manage_store.html', context)
 
 @login_required
-def manage_store_product(request, pk=None):
-    context['page_title'] = "Manage store Product"
+def manage_store_product(request,pk=None,pid=None):
+    if pk is None:
+        messages.error(request, "Store is not recognized")
+        return redirect('store-detail')
+    context['store'] = Store.objects.get(id=pk)
     context['products'] = Product.objects.all()
-    if not pk is None:
-        store = Store.objects.get(id = pk)
+    if not pid is None:
+        storeP = StoreProduct.objects.get(id = pid)
+        store = storeP.store
+        context['storeP'] = storeP
         context['store'] = store
     else:
-        context['store'] = {}
+        context['storeP'] = {}
 
     return render(request, 'manage_store_product.html', context)
 
@@ -256,6 +264,25 @@ def delete_store(request):
             resp['status'] = 'success'
         except Exception as err:
             resp['msg'] = 'Store has failed to delete'
+            print(err)
+
+    else:
+        resp['msg'] = 'Store has failed to delete'
+    
+    return HttpResponse(json.dumps(resp), content_type="application/json")
+
+
+@login_required
+def delete_store_p(request):
+    resp = {'status':'failed','msg':''}
+    if request.method == 'POST':
+        try:
+            store_product = StoreProduct.objects.get(id = request.POST['id'])
+            store_product.delete()
+            messages.success(request, 'Store has been deleted successfully')
+            resp['status'] = 'success'
+        except Exception as err:
+            resp['msg'] = 'Store has failed to delete Product'
             print(err)
 
     else:
@@ -373,16 +400,18 @@ def manage_stock(request,pid = None ,pk = None):
 def addProductStore(request, pk):
     resp = {'status':'failed','msg':''}
     if request.method == 'POST':
-        form = StoreProductForm(request.POST)
+        if (request.POST['id']).isnumeric():
+            store_p = StoreProduct.objects.get(pk=request.POST['id'])
+        else:
+            store_p = None
+        if store_p is None:
+            form = StoreProductForm(request.POST)
+        else:
+            form = StoreProductForm(request.POST, instance= store_p)
         if form.is_valid():
-            store = Store.objects.get(id=pk)
-            product = form.cleaned_data['product']
-            stock = form.cleaned_data['stock']
-            price = form.cleaned_data['price']
-            store_product = StoreProduct(store=store, product=product, stock=stock, price=price)
-            store_product.save()
+            form.save()
             # store_product.products.add(store_product)
-            messages.success(request, 'Stock has been saved successfully.')
+            messages.success(request, 'Product has been saved successfully.')
             resp['status'] = 'success'
         else:
             for fields in form:
