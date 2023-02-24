@@ -86,6 +86,9 @@ class Store(models.Model):
     date_updated = models.DateTimeField(auto_now=True)
     owner = models.ForeignKey(User, default=1,on_delete=models.CASCADE ,blank=True, null=True)
 
+    class Meta:
+        unique_together= ['owner']
+
     def __str__(self):
         return self.name
 
