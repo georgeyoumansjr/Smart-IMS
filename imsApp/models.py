@@ -60,7 +60,7 @@ class Invoice(models.Model):
     total = models.FloatField(default= 0)
     date_created = models.DateTimeField(default=timezone.now)
     date_updated = models.DateTimeField(auto_now=True)
-
+    
     def __str__(self):
         return self.transaction
 

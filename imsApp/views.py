@@ -198,14 +198,19 @@ def save_store(request):
         resp['msg'] = 'No data has been sent.'
     return HttpResponse(json.dumps(resp), content_type = 'application/json')
 
-@admin_only
+
 @login_required
-def view_store(request,pk):
-    
-    store = get_object_or_404(Store, pk=pk)
+def view_store(request,pk=None):
+    if not pk is None:
+        store = get_object_or_404(Store, pk=pk)
+    else:
+        store = get_object_or_404(Store,owner=request.user)
     store_products = store.storeproduct_set.all()
 
-    return render(request, 'view_store.html', {'page_title':"Add Prodcuts to Store",'store': store, 'store_products': store_products})
+    return render(request, 'view_store.html', {'page_title':"View Prodcuts to Store",'store': store, 'store_products': store_products})
+
+
+
 
 @admin_only
 @login_required
