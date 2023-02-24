@@ -13,6 +13,7 @@ from imsApp.models import Category, Product, Stock, Invoice, Invoice_Item,Store,
 from cryptography.fernet import Fernet
 from django.conf import settings
 import base64
+from .auth import admin_only
 
 context = {
     'page_title' : 'File Management System',
@@ -45,13 +46,21 @@ def logoutuser(request):
 
 @login_required
 def home(request):
-    context['page_title'] = 'Home'
-    context['categories'] = Category.objects.count()
-    context['products'] = Product.objects.count()
-    context['sales'] = Invoice.objects.count()
-    context['stores'] = Store.objects.count()
-    context['users'] = User.objects.filter(is_superuser=0).count()
-    return render(request, 'home.html',context)
+    if request.user.is_superuser:
+        context['page_title'] = 'Home'
+        context['categories'] = Category.objects.count()
+        context['products'] = Product.objects.count()
+        context['sales'] = Invoice.objects.count()
+        context['stores'] = Store.objects.count()
+        context['users'] = User.objects.filter(is_superuser=0).count()
+        return render(request, 'home.html',context)
+    else:
+        storeDetail = Store.objects.get(owner=request.user)
+        context['page_title'] = 'Store Home'
+        context['detail'] = storeDetail
+        context['products'] = StoreProduct.objects.filter(store=storeDetail).count()
+    
+        return render(request,'homeIndiv.html',context)
 
 def registerUser(request):
     user = request.user
@@ -120,6 +129,7 @@ def profile(request):
 
 
 # Category
+@admin_only
 @login_required
 def category_mgt(request):
     context['page_title'] = "Product Categories"
@@ -128,6 +138,7 @@ def category_mgt(request):
 
     return render(request, 'category_mgt.html', context)
 
+@admin_only
 @login_required
 def store_mgt(request):
     context['page_title'] = "Store"
@@ -135,6 +146,7 @@ def store_mgt(request):
     context['stores'] = stores
 
     return render(request, 'store_mgt.html', context)
+
 
 @login_required
 def save_category(request):
@@ -160,6 +172,8 @@ def save_category(request):
         resp['msg'] = 'No data has been sent.'
     return HttpResponse(json.dumps(resp), content_type = 'application/json')
 
+
+
 @login_required
 def save_store(request):
     resp = {'status':'failed','msg':''}
@@ -184,13 +198,16 @@ def save_store(request):
         resp['msg'] = 'No data has been sent.'
     return HttpResponse(json.dumps(resp), content_type = 'application/json')
 
+@admin_only
 @login_required
 def view_store(request,pk):
+    
     store = get_object_or_404(Store, pk=pk)
     store_products = store.storeproduct_set.all()
+
     return render(request, 'view_store.html', {'page_title':"Add Prodcuts to Store",'store': store, 'store_products': store_products})
 
-
+@admin_only
 @login_required
 def manage_category(request, pk=None):
     context['page_title'] = "Manage Category"
@@ -202,6 +219,7 @@ def manage_category(request, pk=None):
 
     return render(request, 'manage_category.html', context)
 
+@admin_only
 @login_required
 def manage_store(request, pk=None, pid=None):
     context['page_title'] = "Manage store"
@@ -215,6 +233,7 @@ def manage_store(request, pk=None, pid=None):
 
     return render(request, 'manage_store.html', context)
 
+@admin_only
 @login_required
 def manage_store_product(request,pk=None,pid=None):
     if pk is None:
@@ -291,6 +310,7 @@ def delete_store_p(request):
     return HttpResponse(json.dumps(resp), content_type="application/json")
 
 # product
+@admin_only
 @login_required
 def product_mgt(request):
     context['page_title'] = "Product List"
@@ -323,6 +343,7 @@ def save_product(request):
         resp['msg'] = 'No data has been sent.'
     return HttpResponse(json.dumps(resp), content_type = 'application/json')
 
+@admin_only
 @login_required
 def manage_product(request, pk=None):
     context['page_title'] = "Manage Product"
@@ -354,6 +375,7 @@ def delete_product(request):
     return HttpResponse(json.dumps(resp), content_type="application/json")
 
 #Inventory
+@admin_only
 @login_required
 def inventory(request):
     context['page_title'] = 'Inventory'
@@ -364,6 +386,7 @@ def inventory(request):
     return render(request, 'inventory.html', context)
 
 #Inventory History
+@admin_only
 @login_required
 def inv_history(request, pk= None):
     context['page_title'] = 'Inventory History'
@@ -379,6 +402,7 @@ def inv_history(request, pk= None):
         return render(request, 'inventory-history.html', context )
 
 #Stock Form
+@admin_only
 @login_required
 def manage_stock(request,pid = None ,pk = None):
     if pid is None:
@@ -465,13 +489,14 @@ def delete_stock(request):
     
     return HttpResponse(json.dumps(resp), content_type="application/json")
 
-
+@admin_only
 @login_required
 def sales_mgt(request):
     context['page_title'] = 'Sales'
     products = Product.objects.filter(status = 1).all()
     context['products'] = products
     return render(request,'sales.html', context)
+
 
 
 def get_product(request,pk = None):
@@ -524,6 +549,7 @@ def save_sales(request):
 
     return HttpResponse(json.dumps(resp),content_type="application/json")
 
+@admin_only
 @login_required
 def invoices(request):
     invoice =  Invoice.objects.all()
@@ -551,6 +577,7 @@ def delete_invoice(request):
     
     return HttpResponse(json.dumps(resp), content_type="application/json")
 
+@admin_only
 @login_required
 def stores():
     invoice =  Invoice.objects.all()
