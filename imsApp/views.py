@@ -505,7 +505,7 @@ def sales_mgt(request):
     return render(request,'sales.html', context)
 
 
-def get_store_product(request,sid=None):
+def get_store_products(request,sid=None):
     sid = request.GET.get('store')
     # store.storeproduct_set.all()
     store = Store.objects.get(pk=sid)

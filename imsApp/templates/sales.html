@@ -174,7 +174,7 @@
 
         $('#store').change(function (){
             var storeId = $(this).val();
-            var url = "{% url 'get-store-p' %}"
+            var url = "{% url 'get-store-ps' %}"
             url = url.replace('storeId',storeId);
             $.ajax({
                 type: "GET",
