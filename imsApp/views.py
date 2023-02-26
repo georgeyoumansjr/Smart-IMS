@@ -498,9 +498,20 @@ def delete_stock(request):
 @login_required
 def sales_mgt(request):
     context['page_title'] = 'Sales'
-    products = Product.objects.filter(status = 1).all()
+    products = Product.objects.none()
+    context['stores'] = Store.objects.all()
     context['products'] = products
+
     return render(request,'sales.html', context)
+
+
+def get_store_product(request,sid=None):
+    sid = request.GET.get('store')
+    # store.storeproduct_set.all()
+    store = Store.objects.get(pk=sid)
+    store_products = StoreProduct.objects.filter(store=store)
+
+    return render(request, 'storeP_dropdown.html', {'page_title':"View Prodcuts to Store",'store_products': store_products})
 
 
 

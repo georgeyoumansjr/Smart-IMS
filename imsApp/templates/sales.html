@@ -19,6 +19,19 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                            <div class="form-group mb-3 ">
+                                <label for="store" class="control-label">Store</label>
+                                <select name="store" id="store" class="form-select rounded-0">
+                                    <option value="" selected="selected" disabled="disabled"></option>
+                                    {% for store in stores %}
+                                        <option value="{{ store.id }}">{{ store.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                     <hr>
                     <fieldset>
                         <legend>Items</legend>
@@ -158,6 +171,24 @@
                 }
             })
         })
+
+        $('#store').change(function (){
+            var storeId = $(this).val();
+            var url = "{% url 'get-store-p' %}"
+            url = url.replace('storeId',storeId);
+            $.ajax({
+                type: "GET",
+                url: url,
+                data: {
+                  'csrfmiddlewaretoken': '{{ csrf_token }}',
+                  'store': storeId
+                },
+                success: function (data) {
+                  console.log(data);
+                  $("#pid").html(data);
+                }
+              });
+        });
 
         $('#sale-form').submit(function(e) {
             e.preventDefault();

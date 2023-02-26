@@ -193,10 +193,11 @@ class SaveInvoice(forms.ModelForm):
     transaction = forms.CharField(max_length=100)
     customer = forms.CharField(max_length=250)
     total = forms.FloatField()
+    store = forms.ModelChoiceField(queryset=Product.objects.filter(status='1'), empty_label=None)
 
     class Meta:
         model = Invoice
-        fields = ('transaction', 'customer', 'total')
+        fields = ('transaction', 'customer', 'total', 'store')
 
     def clean_transaction(self):
         pref = datetime.today().strftime('%Y%m%d')

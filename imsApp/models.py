@@ -54,29 +54,6 @@ class Stock(models.Model):
     def __str__(self):
         return self.product.code + ' - ' + self.product.name
 
-class Invoice(models.Model):
-    transaction = models.CharField(max_length = 250)
-    customer = models.CharField(max_length = 250)
-    total = models.FloatField(default= 0)
-    date_created = models.DateTimeField(default=timezone.now)
-    date_updated = models.DateTimeField(auto_now=True)
-    
-    def __str__(self):
-        return self.transaction
-
-    def item_count(self):
-        return Invoice_Item.objects.filter(invoice = self).aggregate(Sum('quantity'))['quantity__sum']
-
-class Invoice_Item(models.Model):
-    invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    stock = models.ForeignKey(Stock, on_delete=models.CASCADE, blank= True, null= True)
-    price = models.FloatField(default=0)
-    quantity = models.FloatField(default=0)
-
-    def __str__(self):
-        return self.invoice.transaction
-
 class Store(models.Model):
     name = models.CharField(max_length=250)
     address = models.TextField()
@@ -98,11 +75,38 @@ class StoreProduct(models.Model):
     stock = models.FloatField(default=0,blank=True, null=True)
     price = models.FloatField(default=0)
 
-    # class Meta:
-    #     unique_together = ["product","store"]
+    class Meta:
+        unique_together = ["product","store"]
 
     def __str__(self):
         return f"{self.store.name} - {self.product.name}"
+
+
+class Invoice(models.Model):
+    transaction = models.CharField(max_length = 250)
+    customer = models.CharField(max_length = 250)
+    total = models.FloatField(default= 0)
+    store = models.ForeignKey(Store, on_delete=models.CASCADE,blank=True, null=True)
+    date_created = models.DateTimeField(default=timezone.now)
+    date_updated = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return self.transaction
+
+    def item_count(self):
+        return Invoice_Item.objects.filter(invoice = self).aggregate(Sum('quantity'))['quantity__sum']
+
+class Invoice_Item(models.Model):
+    invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    stock = models.ForeignKey(Stock, on_delete=models.CASCADE, blank= True, null= True)
+    price = models.FloatField(default=0)
+    quantity = models.FloatField(default=0)
+
+    def __str__(self):
+        return self.invoice.transaction
+
+
 
 
 
