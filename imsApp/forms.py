@@ -193,7 +193,7 @@ class SaveInvoice(forms.ModelForm):
     transaction = forms.CharField(max_length=100)
     customer = forms.CharField(max_length=250)
     total = forms.FloatField()
-    store = forms.ModelChoiceField(queryset=Product.objects.filter(status='1'), empty_label=None)
+    store = forms.ModelChoiceField(queryset=Store.objects.filter(), empty_label=None)
 
     class Meta:
         model = Invoice

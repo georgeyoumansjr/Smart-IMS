@@ -1,4 +1,4 @@
 <option value="" selected="selected" disabled="disabled"></option>
 {% for product in store_products %}
-    <option value="{{ product.pk }}">{{ product }}</option>
+    <option value="{{ product.product.pk }}">{{ product }}</option>
 {% endfor %}

@@ -534,6 +534,7 @@ def save_sales(request):
     id = 2
     if request.method == 'POST':
         pids = request.POST.getlist('pid[]')
+        print(pids)
         invoice_form = SaveInvoice(request.POST)
         if invoice_form.is_valid():
             invoice_form.save()
