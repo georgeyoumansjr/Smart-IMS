@@ -42,7 +42,7 @@
                             <td class="px-1 py-1 align-middle text-center">{{ forloop.counter }}</td>
                             <td class="px-2 py-1 align-middle">{{ product }}</td>
                             <td class="px-1 py-1 align-middle text-end">{{ product.stock }}</td>
-                            <td class="px-1 py-1 align-middle text-end">{{ product.price }}</td>
+                            <td class="px-1 py-1 align-middle text-end">{{ product.product.price }}</td>
                             <td class="px-2 py-1 align-middle text-center">
                                 {% if request.user.is_superuser %}
                                 <a class="btn btn-outline-primary btn-sm edit-data" href="javascript:void(0)" data-id="{{ product.pk }}" title="Edit">

@@ -73,7 +73,7 @@ class StoreProduct(models.Model):
     store = models.ForeignKey(Store, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     stock = models.FloatField(default=0,blank=True, null=True)
-    price = models.FloatField(default=0)
+    price = models.FloatField(default=0,blank=True, null=True)
 
     class Meta:
         unique_together = ["product","store"]
