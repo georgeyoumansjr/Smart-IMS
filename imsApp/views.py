@@ -578,6 +578,15 @@ def invoices(request):
     return render(request, 'invoices.html', context)
 
 @login_required
+def ownInvoice(request):
+    store = Store.objects.get(owner=request.user)
+    invoice = Invoice.objects.filter(store=store)
+    context['page_title'] = store.name + " Invoices"
+    context['invoices'] = invoice
+
+    return render(request, 'invoices.html', context)
+
+@login_required
 def delete_invoice(request):
     resp = {'status':'failed', 'msg':''}
 

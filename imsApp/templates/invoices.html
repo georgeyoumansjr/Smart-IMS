@@ -41,11 +41,13 @@
                             <td class="px-2 py-1 align-middle">{{ invoice.store }}</td>
                             <td class="px-2 py-1 align-middle text-end">{{ invoice.item_count|floatformat:0|intcomma }}</td>
                             <td class="px-2 py-1 align-middle text-end">{{ invoice.total|floatformat:2|intcomma }}</td>
+                            {% if request.user.is_superuser %}
                             <td class="px-2 py-1 align-middle text-center">
                                 <button class="btn btn-outline-danger btn-sm delete-data" type="button" data-id="{{ invoice.pk }}" title="Delete">
                                     <i class="fa fa-trash"></i>
                                 </button>
                             </td>
+                            {% endif %}
                         </tr>
                         {% endfor %}
                     </tbody>
