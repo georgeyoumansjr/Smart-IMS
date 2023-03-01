@@ -1,6 +1,6 @@
 {% load customfilter %}
 <div class="container-fluid">
-    <form action=" " id="product-form">
+    <form action=" " id="product-form" enctype="multipart/form-data">
         {% csrf_token %}
         <input type="hidden" name="id" value="{{ product.id }}">
         <div class="form-group mb-3 ">
@@ -18,6 +18,10 @@
         <div class="form-group mb-3 ">
             <label for="price" class="control-label">Price</label>
             <input type="number" step="any" class="form-control rounded-0 text-end" id="price" name="price" value="{{ product.price }}" required>
+        </div>
+        <div class="form-group mb-3 ">
+            <label for="image" class="control-label">Image</label>
+            <input type="file" step="any" accept="image/*" class="form-control rounded-0 text-end" id="image" name="image" value="{{ product.image }}" required>
         </div>
         <div class="form-group mb-3 ">
             <label for="status" class="control-label">Status</label>

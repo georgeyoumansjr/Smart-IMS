@@ -29,30 +29,42 @@
                     </colgroup>
                     <thead>
                         <tr class="bg-gradient bg-primary bg-opacity-50 text-light">
+                            {% if request.user.is_superuser %}
                             <th class="px-1 py-2 text-center">#</th>
                             <th class="px-2 py-2 text-center">Product</th>
                             <th class="px-1 py-2 text-center">Available Stock</th>
                             <th class="px-1 py-2 text-center">Price</th>
                             <th class="px-2 py-2 text-center">Action</th>
+                            {% else %}
+                            <th class="px-1 py-2 text-center">#</th>
+                            <th class="px-2 py-2 text-center">Product</th>
+                            <th class="px-2 py-2 text-center">Available Stock</th>
+                            <th class="px-2 py-2 text-center">Price</th>
+                            {% endif %}
                         </tr>
                     </thead>
                     <tbody>
                         {% for product in store_products %}
                         <tr>
+                            {% if request.user.is_superuser %}
                             <td class="px-1 py-1 align-middle text-center">{{ forloop.counter }}</td>
                             <td class="px-2 py-1 align-middle">{{ product }}</td>
                             <td class="px-1 py-1 align-middle text-end">{{ product.stock }}</td>
                             <td class="px-1 py-1 align-middle text-end">{{ product.product.price }}</td>
                             <td class="px-2 py-1 align-middle text-center">
-                                {% if request.user.is_superuser %}
                                 <a class="btn btn-outline-primary btn-sm edit-data" href="javascript:void(0)" data-id="{{ product.pk }}" title="Edit">
                                     <i class="fa fa-edit"></i>
                                 </a>
                                 <button class="btn btn-outline-danger btn-sm delete-data" type="button" data-id="{{ product.pk }}" title="Delete">
                                     <i class="fa fa-trash"></i>
                                 </button>
-                                {% endif %}
                             </td>
+                            {% else %}
+                            <td class="px-1 py-1 align-middle text-center">{{ forloop.counter }}</td>
+                            <td class="px-2 py-1 align-middle">{{ product }}</td>
+                            <td class="px-1 py-1 align-middle text-end">{{ product.stock }}</td>
+                            <td class="px-1 py-1 align-middle text-end">{{ product.product.price }}</td>
+                            {% endif %}
                         </tr>
                         {% endfor %}
                     </tbody>

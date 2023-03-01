@@ -26,6 +26,7 @@ class Product(models.Model):
     description = models.TextField()
     price = models.FloatField(default=0)
     status = models.CharField(max_length=2, choices=(('1','Active'),('2','Inactive')), default=1)
+    image = models.ImageField(upload_to='uploads/products/',default='default_product_image.png')
     date_created = models.DateTimeField(default=timezone.now)
     date_updated = models.DateTimeField(auto_now=True)
 

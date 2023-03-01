@@ -157,7 +157,7 @@ class SaveProduct(forms.ModelForm):
 
     class Meta:
         model = Product
-        fields = ('code','name','description','status','price')
+        fields = ('code','name','description','image','status','price')
 
     def clean_code(self):
         id = self.instance.id if self.instance.id else 0

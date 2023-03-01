@@ -59,7 +59,8 @@ def home(request):
         context['page_title'] = 'Store Home'
         context['detail'] = storeDetail
         context['products'] = StoreProduct.objects.filter(store=storeDetail).count()
-    
+        context['sales'] = Invoice.objects.filter(store=storeDetail).count()
+
         return render(request,'homeIndiv.html',context)
 
 def registerUser(request):
@@ -333,9 +334,9 @@ def save_product(request):
         else:
             product = None
         if product is None:
-            form = SaveProduct(request.POST)
+            form = SaveProduct(request.POST,request.FILES)
         else:
-            form = SaveProduct(request.POST, instance= product)
+            form = SaveProduct(request.POST,request.FILES,instance= product)
         if form.is_valid():
             form.save()
             messages.success(request, 'Product has been saved successfully.')

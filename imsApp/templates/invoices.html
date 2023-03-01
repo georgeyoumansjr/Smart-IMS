@@ -10,6 +10,7 @@
             <div class="container-fluid">
                 <table class="table table-bordered" id="invoice-list">
                     <colgroup>
+                        {% if request.user.is_superuser %}
                         <col width="3%">
                         <col width="15%">
                         <col width="20%">
@@ -18,9 +19,19 @@
                         <col width="8%">
                         <col width="10%">
                         <col width="15%">
+                        {% else %}
+                        <col width="5%">
+                        <col width="22%">
+                        <col width="20%">
+                        <col width="20%">
+                        <col width="10%">
+                        <col width="10%">
+                        <col width="13%">
+                        {% endif %}
                     </colgroup>
                     <thead>
                         <tr class="bg-gradient bg-primary bg-opacity-50 text-light">
+                            {% if request.user.is_superuser %}
                             <th class="px-2 py-2 text-center">#</th>
                             <th class="px-2 py-2 text-center">Date/Time</th>
                             <th class="px-2 py-2 text-center">Transaction Code</th>
@@ -29,11 +40,21 @@
                             <th class="px-2 py-2 text-center">Total Item</th>
                             <th class="px-2 py-2 text-center">Total Amount</th>
                             <th class="px-2 py-2 text-center">Action</th>
+                            {% else %}
+                            <th class="px-2 py-2 text-center">#</th>
+                            <th class="px-2 py-2 text-center">Date/Time</th>
+                            <th class="px-2 py-2 text-center">Transaction Code</th>
+                            <th class="px-2 py-2 text-center">Customer</th>
+                            <th class="px-2 py-2 text-center">Store</th>
+                            <th class="px-2 py-2 text-center">Total Item</th>
+                            <th class="px-2 py-2 text-center">Total Amount</th>
+                            {% endif %}
                         </tr>
                     </thead>
                     <tbody>
                         {% for invoice in invoices %}
                         <tr>
+                            {% if request.user.is_superuser %}
                             <td class="px-2 py-1 align-middle text-center">{{ forloop.counter }}</td>
                             <td class="px-2 py-1 align-middle">{{ invoice.date_created|date:"Y-m-d h:i A" }}</td>
                             <td class="px-2 py-1 align-middle">{{ invoice.transaction }}</td>
@@ -41,12 +62,19 @@
                             <td class="px-2 py-1 align-middle">{{ invoice.store }}</td>
                             <td class="px-2 py-1 align-middle text-end">{{ invoice.item_count|floatformat:0|intcomma }}</td>
                             <td class="px-2 py-1 align-middle text-end">{{ invoice.total|floatformat:2|intcomma }}</td>
-                            {% if request.user.is_superuser %}
                             <td class="px-2 py-1 align-middle text-center">
                                 <button class="btn btn-outline-danger btn-sm delete-data" type="button" data-id="{{ invoice.pk }}" title="Delete">
                                     <i class="fa fa-trash"></i>
                                 </button>
                             </td>
+                            {% else %}
+                            <td class="px-2 py-1 align-middle text-center">{{ forloop.counter }}</td>
+                            <td class="px-2 py-1 align-middle">{{ invoice.date_created|date:"Y-m-d h:i A" }}</td>
+                            <td class="px-2 py-1 align-middle">{{ invoice.transaction }}</td>
+                            <td class="px-2 py-1 align-middle">{{ invoice.customer }}</td>
+                            <td class="px-2 py-1 align-middle">{{ invoice.store }}</td>
+                            <td class="px-2 py-1 align-middle text-end">{{ invoice.item_count|floatformat:0|intcomma }}</td>
+                            <td class="px-2 py-1 align-middle text-end">{{ invoice.total|floatformat:2|intcomma }}</td>
                             {% endif %}
                         </tr>
                         {% endfor %}
