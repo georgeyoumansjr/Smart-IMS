@@ -125,11 +125,11 @@ class SaveStore(forms.ModelForm):
 class StoreProductForm(forms.ModelForm):
     product = forms.ModelChoiceField(queryset=Product.objects.filter(status='1'), empty_label=None)
     stock = forms.FloatField(required=False)
-    # price = forms.FloatField()
+    price = forms.FloatField()
 
     class Meta:
         model = StoreProduct
-        fields = ('product','stock')
+        fields = ('product','stock','price')
 
     def clean(self):
         cleaned_data = super().clean()

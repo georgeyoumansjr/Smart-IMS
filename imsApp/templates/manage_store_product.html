@@ -9,6 +9,10 @@
             <input type="number" step="any" class="form-control rounded-0 text-end" id="stock" name="stock" value="{{ storeP.stock }}" required>
         </div>
         <div class="form-group mb-3 ">
+            <label for="price" class="control-label">price</label>
+            <input type="number" step="any" class="form-control rounded-0 text-end" id="price" name="price" value="{{ storeP.price }}" required>
+        </div>
+        <div class="form-group mb-3 ">
             <label for="product" class="control-label">Products</label>
             <select name="product" id="product" class="form-select rounded-0">
                 {% for choice in products %}

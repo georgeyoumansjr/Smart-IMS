@@ -439,9 +439,9 @@ def addProductStore(request, pk):
         else:
             form = StoreProductForm(request.POST, instance= store_p)
         if form.is_valid():
-            # print(form)
+            print(form.cleaned_data)
             store = Store.objects.get(pk=pk)
-            create = StoreProduct.objects.create(**form.cleaned_data,store=store)
+            get,create = StoreProduct.objects.update_or_create(**form.cleaned_data,store=store)
             # store_product.products.add(store_product)
             messages.success(request, 'Product has been saved successfully.')
             resp['status'] = 'success'
