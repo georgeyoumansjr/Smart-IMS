@@ -53,7 +53,7 @@
                             <td class="px-1 py-1 align-middle text-center">{{ forloop.counter }}</td>
                             <td class="px-2 py-1 align-middle">
                                 
-                                <img width="200" height="200" class="img img-thumbnail img-fluid view-js" src="{{ product.product.image }}" alt="{{ product }}">
+                                <img width="200" height="200" class="img img-thumbnail img-fluid view-js" src="{{ product.product.image.url }}" alt="{{ product }}">
                             </td>
                             <td class="px-2 py-1 align-middle">{{ product }}</td>
                             <td class="px-1 py-1 align-middle text-end">{{ product.stock }}</td>
@@ -69,7 +69,7 @@
                             {% else %}
                             <td class="px-1 py-1 align-middle text-center">{{ forloop.counter }}</td>
                             <td class="px-2 py-1 align-middle">
-                                <img width="200" height="200" class="img img-thumbnail img-fluid view-js" src="{{ product.product.image }}" alt="{{ product }}">
+                                <img width="200" height="200" class="img img-thumbnail img-fluid view-js" src="{{ product.product.image.url }}" alt="{{ product }}">
                             </td>
                             <td class="px-2 py-1 align-middle">{{ product }}</td>
                             <td class="px-1 py-1 align-middle text-end">{{ product.stock }}</td>
