@@ -54,6 +54,7 @@ class Stock(models.Model):
 
     def __str__(self):
         return self.product.code + ' - ' + self.product.name
+        
 
 class Store(models.Model):
     name = models.CharField(max_length=250)

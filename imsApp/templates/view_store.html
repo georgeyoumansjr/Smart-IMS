@@ -105,7 +105,7 @@
             uni_modal('<i class="fa fa-plus"></i> Add Store', '{% url "manage-store-p" pk=store.id %}', 'modal-md')
         })
         $('.edit-data').click(function() {
-            var url = '{% url "manage-store-p-pid" pk=store.id pid=123 %}'.replace(/123/,$(this).attr('data-id'));
+            var url = '{% url "manage-store-p-pid" pk=store.id pid=123 %}'.replace("123",$(this).attr('data-id'));
             uni_modal('<i class="fa fa-edit"></i> Edit Store', url, 'modal-md')
         })
         $('.delete-data').click(function() {

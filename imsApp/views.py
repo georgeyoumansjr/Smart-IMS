@@ -247,7 +247,10 @@ def manage_store_product(request,pk=None,pid=None):
         return redirect('store-detail')
     context['store'] = Store.objects.get(id=pk)
     context['products'] = Product.objects.all()
-    if not pid is None:
+    # print('here')
+    # print(pid)
+    # print(pk)
+    if pid:
         storeP = StoreProduct.objects.get(id = pid)
         store = storeP.store
         context['storeP'] = storeP
@@ -440,8 +443,16 @@ def addProductStore(request, pk):
             form = StoreProductForm(request.POST, instance= store_p)
         if form.is_valid():
             print(form.cleaned_data)
-            store = Store.objects.get(pk=pk)
-            get,create = StoreProduct.objects.update_or_create(**form.cleaned_data,store=store)
+            form.save()
+            stock = Stock.objects.filter(product=request.POST['product']).first()
+            # print(stock[0])
+            if not store_p:
+                stock.quantity = float(stock.quantity) - float(request.POST['stock'])
+                stock.save()
+            # stock.update(quantity = quantity - request.POST['stock'])
+            
+            # store = Store.objects.get(pk=pk)
+            # get,create = StoreProduct.objects.update_or_create(**form.cleaned_data,store=store)
             # store_product.products.add(store_product)
             messages.success(request, 'Product has been saved successfully.')
             resp['status'] = 'success'
