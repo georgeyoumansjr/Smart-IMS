@@ -211,8 +211,6 @@ def view_store(request,pk=None):
     return render(request, 'view_store.html', {'page_title':"View Prodcuts to Store",'store': store, 'store_products': store_products})
 
 
-
-
 @admin_only
 @login_required
 def manage_category(request, pk=None):
@@ -442,10 +440,14 @@ def addProductStore(request, pk):
         else:
             form = StoreProductForm(request.POST, instance= store_p)
         if form.is_valid():
-            print(form.cleaned_data)
-            form.save()
+            # print(form.cleaned_data)
+
+            detail = form.save(commit=False)
+            detail.store = Store.objects.get(pk=pk)
+            detail.save()
             stock = Stock.objects.filter(product=request.POST['product']).first()
             # print(stock[0])
+            
             if not store_p:
                 stock.quantity = float(stock.quantity) - float(request.POST['stock'])
                 stock.save()

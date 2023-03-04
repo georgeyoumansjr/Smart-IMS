@@ -175,10 +175,11 @@ class SaveStock(forms.ModelForm):
     product = forms.CharField(max_length=30)
     quantity = forms.CharField(max_length=250)
     type = forms.ChoiceField(choices=[('1','Stock-in'),('2','Stock-Out')])
+    store = forms.ModelChoiceField(queryset=Store.objects.filter(), empty_label=None)
 
     class Meta:
         model = Stock
-        fields = ('product', 'quantity', 'type')
+        fields = ('product', 'quantity', 'type','store')
 
     def clean_product(self):
         pid = self.cleaned_data['product']
