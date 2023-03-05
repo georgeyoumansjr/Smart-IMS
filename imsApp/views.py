@@ -226,7 +226,7 @@ def manage_category(request, pk=None):
 
 @admin_only
 @login_required
-def manage_store(request, pk=None, pid=None):
+def manage_store(request, pk=None):
     context['page_title'] = "Manage store"
     context['category'] = Category.objects.all()
     context['users'] = User.objects.filter(is_superuser=0)
@@ -456,8 +456,7 @@ def addProductStore(request, pk):
                 messages.success(request, 'Product has been saved successfully.')
                 resp['status'] = 'success'
             except IntegrityError as e:
-                if 'unique constraint' in e.args:
-                    resp['msg'] = 'The Product already exists in the Store'
+                resp['msg'] = 'The Product already exists in the Store'
                     
         else:
             for fields in form:

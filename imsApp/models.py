@@ -54,10 +54,7 @@ class Store(models.Model):
     products = models.ManyToManyField(Product, through='StoreProduct')
     date_created = models.DateTimeField(default=timezone.now)
     date_updated = models.DateTimeField(auto_now=True)
-    owner = models.ForeignKey(User, default=1,on_delete=models.CASCADE ,blank=True, null=True)
-
-    class Meta:
-        unique_together= ['owner']
+    owner = models.OneToOneField(User, default=1,on_delete=models.CASCADE ,blank=True, null=True)
 
     def __str__(self):
         return self.name
