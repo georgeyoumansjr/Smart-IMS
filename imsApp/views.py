@@ -416,6 +416,7 @@ def manage_stock(request,pid = None ,pk = None):
         messages.error(request, "Product ID is not recognized")
         return redirect('inventory-page')
     context['pid'] = pid
+    context['store'] = Store.objects.all()
     if pk is None:
         context['page_title'] = "Add New Stock"
         context['stock'] = {}
@@ -423,6 +424,7 @@ def manage_stock(request,pid = None ,pk = None):
         context['page_title'] = "Manage New Stock"
         stock = Stock.objects.get(id = pk)
         context['stock'] = stock
+
     
     return render(request, 'manage_stock.html', context )
 
@@ -444,13 +446,14 @@ def addProductStore(request, pk):
 
             detail = form.save(commit=False)
             detail.store = Store.objects.get(pk=pk)
+            detail.stock = detail.count_inventory()
             detail.save()
             stock = Stock.objects.filter(product=request.POST['product']).first()
             # print(stock[0])
             
-            if not store_p:
-                stock.quantity = float(stock.quantity) - float(request.POST['stock'])
-                stock.save()
+            # if not store_p:
+            #     stock.quantity = float(stock.quantity) - float(request.POST['stock'])
+            #     stock.save()
             # stock.update(quantity = quantity - request.POST['stock'])
             
             # store = Store.objects.get(pk=pk)

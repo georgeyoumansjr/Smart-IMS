@@ -65,7 +65,7 @@ class Store(models.Model):
 class Stock(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.FloatField(default=0)
-    store = models.ForeignKey(Store,on_delete=models.CASCADE)
+    store = models.ForeignKey(Store,on_delete=models.CASCADE,default=1)
     type = models.CharField(max_length=2,choices=(('1','Stock-in'),('2','Stock-Out')), default = 1)
     date_created = models.DateTimeField(default=timezone.now)
     date_updated = models.DateTimeField(auto_now=True)
@@ -84,6 +84,23 @@ class StoreProduct(models.Model):
 
     def __str__(self):
         return f"{self.store.name} - {self.product.name}"
+    
+    def save(self, *args, **kwargs):
+        self.stock = self.count_inventory()
+        super().save(*args, **kwargs)
+
+    def count_inventory(self):
+        stocks = Stock.objects.filter(product=self.product, store=self.store)
+        stockIn = 0
+        stockOut = 0
+        print(stocks)
+        for stock in stocks:
+            if stock.type == '1':
+                stockIn = int(stockIn) + int(stock.quantity)
+            else:
+                stockOut = int(stockOut) + int(stock.quantity)
+        available = stockIn - stockOut
+        return available
 
 
         

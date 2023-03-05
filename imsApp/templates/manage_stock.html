@@ -9,6 +9,15 @@
             <label for="quantity" class="control-label">Quantity</label>
             <input type="number" step="any" class="form-control rounded-0 text-end" id="quantity" name="quantity" value="{{ stock.quantity }}" required>
         </div>
+        <div class="form-group mb-3 ">
+            <label for="store" class="control-label">store</label>
+            <select name="store" id="store" class="form-select rounded-0">
+                <option value="" selected="selected" disabled="disabled"></option>
+                {% for choice in store %}
+                    <option value="{{ choice.id }}">{{ choice.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
     </form>
 </div>
 <script>

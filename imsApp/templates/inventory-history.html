@@ -27,15 +27,17 @@
                     <table class="table table-bordered" id="stock-tbl">
                         <colgroup>
                             <col width="5%">
-                            <col width="25%">
-                            <col width="25%">
-                            <col width="25%">
+                            <col width="20%">
+                            <col width="10%">
+                            <col width="20%">
+                            <col width="15%">
                             <col width="20%">
                         </colgroup>
                         <thead>
                             <th class="text-center">#</th>
                             <th class="text-center">Data/Time</th>
                             <th class="text-center">Quantity</th>
+                            <th class="text-center">Store</th>
                             <th class="text-center">Type</th>
                             <th class="text-center">Action</th>
                         </thead>
@@ -45,6 +47,7 @@
                                 <td class="text-center">{{ forloop.counter }}</td>
                                 <td class="">{{ stock.date_created|date:"Y-m-d h:i A" }}</td>
                                 <td class="text-center">{{ stock.quantity|floatformat:0|intcomma }}</td>
+                                <td class="text-center">{{ stock.store }}</td>
                                 <td class="text-center">
                                     {% if stock.type == '1' %}
                                     <span class="badge px-3 rounded-pill bg-primary bg-gradient">Stock In</span> {% else %}
