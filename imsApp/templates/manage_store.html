@@ -23,7 +23,11 @@
             <label for="owner" class="control-label">Owner</label>
             <select name="owner" id="owner" class="form-select rounded-0">
                 {% for choice in users %}
-                    <option value="{{ choice.id }}">{{ choice.username }}  {{ choice.firstname }} {{ choice.lastname }}</option>
+                    {% if choice.id == store.owner.id  %}
+                        <option value="{{ choice.id }}" selected>{{ choice.username }}  {{ choice.firstname }} {{ choice.lastname }}</option>
+                    {% else %}
+                        <option value="{{ choice.id }}" >{{ choice.username }}  {{ choice.firstname }} {{ choice.lastname }}</option>
+                    {% endif %}
                 {% endfor %}
             </select>
         </div>
