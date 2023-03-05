@@ -11,7 +11,11 @@
         </div>
         <div class="form-group mb-3 ">
             <label for="product" class="control-label">Products</label>
+            {% if edit %}
+            <select name="product" id="product" class="form-select rounded-0" disabled>
+            {% else %}
             <select name="product" id="product" class="form-select rounded-0">
+            {% endif %}
                 {% for choice in products %}
                     {% if choice.id == storeP.product.id  %}
                         <option value="{{ choice.id }}" selected>{{ choice.name }}</option>

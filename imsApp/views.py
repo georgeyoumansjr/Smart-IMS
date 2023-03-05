@@ -8,6 +8,7 @@ import json
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.http import HttpResponse
+from django.db import IntegrityError
 from imsApp.forms import SaveStock, UserRegistration, UpdateProfile, UpdatePasswords, SaveCategory, SaveStore ,SaveProduct, SaveInvoice, SaveInvoiceItem, StoreProductForm
 from imsApp.models import Category, Product, Stock, Invoice, Invoice_Item,Store, StoreProduct
 from cryptography.fernet import Fernet
@@ -253,7 +254,9 @@ def manage_store_product(request,pk=None,pid=None):
         store = storeP.store
         context['storeP'] = storeP
         context['store'] = store
+        context['edit'] = True
     else:
+        context['edit'] = False
         context['storeP'] = {}
 
     return render(request, 'manage_store_product.html', context)
@@ -443,24 +446,19 @@ def addProductStore(request, pk):
             form = StoreProductForm(request.POST, instance= store_p)
         if form.is_valid():
             # print(form.cleaned_data)
-
-            detail = form.save(commit=False)
-            detail.store = Store.objects.get(pk=pk)
-            detail.stock = detail.count_inventory()
-            detail.save()
-            stock = Stock.objects.filter(product=request.POST['product']).first()
-            # print(stock[0])
-            
-            # if not store_p:
-            #     stock.quantity = float(stock.quantity) - float(request.POST['stock'])
-            #     stock.save()
-            # stock.update(quantity = quantity - request.POST['stock'])
-            
-            # store = Store.objects.get(pk=pk)
-            # get,create = StoreProduct.objects.update_or_create(**form.cleaned_data,store=store)
-            # store_product.products.add(store_product)
-            messages.success(request, 'Product has been saved successfully.')
-            resp['status'] = 'success'
+            try:
+                detail = form.save(commit=False)
+                detail.store = Store.objects.get(pk=pk)
+                detail.stock = detail.count_inventory()
+                detail.save()
+                stock = Stock.objects.filter(product=request.POST['product']).first()
+                
+                messages.success(request, 'Product has been saved successfully.')
+                resp['status'] = 'success'
+            except IntegrityError as e:
+                if 'unique constraint' in e.args:
+                    resp['msg'] = 'The Product already exists in the Store'
+                    
         else:
             for fields in form:
                 for error in fields.errors:

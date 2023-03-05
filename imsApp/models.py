@@ -93,7 +93,7 @@ class StoreProduct(models.Model):
         stocks = Stock.objects.filter(product=self.product, store=self.store)
         stockIn = 0
         stockOut = 0
-        print(stocks)
+        # print(stocks)
         for stock in stocks:
             if stock.type == '1':
                 stockIn = int(stockIn) + int(stock.quantity)

@@ -131,21 +131,6 @@ class StoreProductForm(forms.ModelForm):
         model = StoreProduct
         fields = ('product','price')
 
-    # def clean(self):
-    #     cleaned_data = super().clean()
-    #     product = cleaned_data.get('product')
-    #     stock = cleaned_data.get('stock')
-
-    #     if not product or not stock:
-    #         return cleaned_data
-
-    #     if stock < 0:
-    #         self.add_error('stock', 'Stock quantity cannot be negative')
-
-    #     if product.count_inventory() < stock:
-    #         self.add_error('stock', 'Insufficient stock for this product')
-
-    #     return cleaned_data
 
 
 class SaveProduct(forms.ModelForm):
