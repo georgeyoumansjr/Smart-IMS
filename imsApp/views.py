@@ -493,9 +493,16 @@ def save_stock(request):
         else:
             form = SaveStock(request.POST, instance= stock)
         if form.is_valid():
-            form.save()
-            messages.success(request, 'Stock has been saved successfully.')
-            resp['status'] = 'success'
+            # print(form.cleaned_data)
+            try:
+                storeP = StoreProduct.objects.get(product=request.POST['product'],store=request.POST['store'])
+                storeP.stock = storeP.count_inventory()
+                storeP.save()
+                form.save()
+                messages.success(request, 'Stock has been saved successfully.')
+                resp['status'] = 'success'
+            except StoreProduct.DoesNotExist:
+                resp['msg'] = 'This product doesn\'t exist in the store. Please add it first.'
         else:
             for fields in form:
                 for error in fields.errors:
