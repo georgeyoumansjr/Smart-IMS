@@ -387,7 +387,7 @@ def delete_product(request):
 #Inventory
 # @admin_only
 @login_required
-def inventory(request,):
+def inventory(request):
     context['page_title'] = 'Inventory'
     if request.user.is_superuser:
         products = Product.objects.all()
