@@ -30,7 +30,9 @@
 <script>
     $(function() {
         $('#store-p-form').submit(function(e) {
+            $(this).find('#product').prop('disabled', false);
             e.preventDefault();
+
             var _this = $(this)
             $('.err-msg').remove();
             var el = $('<div>')
