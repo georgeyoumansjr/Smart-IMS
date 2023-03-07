@@ -22,12 +22,21 @@
             <div class="container-fluid">
                 <table class="table table-bordered" id="product-list">
                     <colgroup>
+                        {% if request.user.is_superuser %}
                         <col width="5%">
                         <col width="20%">
                         <col width="25%">
                         <col width="15%">
                         <col width="10%">
                         <col width="25%">
+                        {% else %}
+                        <col width="5%">
+                        <col width="20%">
+                        <col width="30%">
+                        <col width="30%">
+                        <col width="15%">
+                        
+                        {% endif %}
                     </colgroup>
                     <thead>
                         <tr class="bg-gradient bg-primary bg-opacity-50 text-light">

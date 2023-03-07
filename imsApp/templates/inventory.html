@@ -28,12 +28,21 @@
                         <tr>
                             <td class="px-2 py-1 align-middle text-center">{{ forloop.counter }}</td>
                             <td class="px-2 py-1 align-middle">{{ product }}</td>
-                            <td class="px-2 py-1 align-middle text-end">{{ product.count_inventory }}</td>
-                            <td class="px-2 py-1 align-middle text-center">
-                                <a class="btn btn-outline-primary btn-sm" href="{% url 'inventory-history-page' product.pk %}" data-id="{{ product.pk }}" title="View History">
-                                    <i class="fa fa-eye text-dark"></i>
-                                </a>
-                            </td>
+                            {% if isuser %}
+                                <td class="px-2 py-1 align-middle text-end">{{ product.product.count_inventory }}</td>
+                                <td class="px-2 py-1 align-middle text-center">
+                                    <a class="btn btn-outline-primary btn-sm" href="{% url 'inventory-history-page' product.product.pk %}" data-id="{{ product.product.pk }}" title="View History">
+                                        <i class="fa fa-eye text-dark"></i>
+                                    </a>
+                                </td>
+                            {% else %}
+                                <td class="px-2 py-1 align-middle text-end">{{ product.count_inventory }}</td>
+                                <td class="px-2 py-1 align-middle text-center">
+                                    <a class="btn btn-outline-primary btn-sm" href="{% url 'inventory-history-page' product.pk %}" data-id="{{ product.pk }}" title="View History">
+                                        <i class="fa fa-eye text-dark"></i>
+                                    </a>
+                                </td>
+                            {% endif %}
                         </tr>
                         {% endfor %}
                     </tbody>

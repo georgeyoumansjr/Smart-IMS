@@ -385,18 +385,23 @@ def delete_product(request):
     return HttpResponse(json.dumps(resp), content_type="application/json")
 
 #Inventory
-@admin_only
+# @admin_only
 @login_required
-def inventory(request):
+def inventory(request,):
     context['page_title'] = 'Inventory'
-
-    products = Product.objects.all()
-    context['products'] = products
-
+    if request.user.is_superuser:
+        products = Product.objects.all()
+        context['products'] = products
+    else:
+        store = Store.objects.get(owner=request.user)
+        products = StoreProduct.objects.filter(store=store)
+        context['products'] = products
+        context['isuser'] = True
+        
     return render(request, 'inventory.html', context)
 
 #Inventory History
-@admin_only
+
 @login_required
 def inv_history(request, pk= None):
     context['page_title'] = 'Inventory History'
@@ -404,10 +409,18 @@ def inv_history(request, pk= None):
         messages.error(request, "Product ID is not recognized")
         return redirect('inventory-page')
     else:
-        product = Product.objects.get(id = pk)
-        stocks = Stock.objects.filter(product = product).all()
-        context['product'] = product
-        context['stocks'] = stocks
+        if request.user.is_superuser:
+            product = Product.objects.get(id = pk)
+            stocks = Stock.objects.filter(product = product).all()
+            context['product'] = product
+            context['stocks'] = stocks
+        else:
+            product = Product.objects.get(id = pk)
+            store = Store.objects.get(owner=request.user)
+            stocks = Stock.objects.filter(product = product,store=store ).all()
+            context['product'] = product
+            context['stocks'] = stocks
+            context['isuser'] = True
 
         return render(request, 'inventory-history.html', context )
 

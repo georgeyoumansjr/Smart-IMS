@@ -4,7 +4,9 @@
         <div class="card-header">
             <div class="w-100 d-flex justify-content-between">
                 <h5 class="fw-bolder card-title">Product Stock History</h5>
+                {% if not isuser %}
                 <button class="btn btn-primary btn-sm rounded-0 bg-gradient px-3" type="button" id="add_stock"><i class="fa fa-plus"></i> Add Stock</button>
+                {% endif %}
             </div>
         </div>
         <div class="card-body">
@@ -26,12 +28,21 @@
                     <legend>History</legend>
                     <table class="table table-bordered" id="stock-tbl">
                         <colgroup>
+                            {% if not isuser %}
                             <col width="5%">
                             <col width="20%">
                             <col width="10%">
                             <col width="20%">
                             <col width="15%">
                             <col width="20%">
+                            {% else %}
+                            <col width="10%">
+                            <col width="30%">
+                            <col width="15%">
+                            <col width="20%">
+                            <col width="25%">
+                            
+                            {% endif %}
                         </colgroup>
                         <thead>
                             <th class="text-center">#</th>
@@ -39,7 +50,9 @@
                             <th class="text-center">Quantity</th>
                             <th class="text-center">Store</th>
                             <th class="text-center">Type</th>
-                            <th class="text-center">Action</th>
+                            {% if not isuser %}
+                                <th class="text-center">Action</th>
+                            {% endif %}
                         </thead>
                         <tbody>
                             {% for stock in stocks %}
@@ -53,6 +66,7 @@
                                     <span class="badge px-3 rounded-pill bg-primary bg-gradient">Stock In</span> {% else %}
                                     <span class="badge px-3 rounded-pill bg-danger bg-gradient">Stock Out</span> {% endif %}
                                 </td>
+                                {% if not isuser %}
                                 <td class="text-center">
                                     {% if stock.type == '1' %}
                                     <a class="btn btn-outline-primary btn-sm edit-data" href="javascript:void(0)" data-id="{{ stock.pk }}" title="Edit">
@@ -65,6 +79,7 @@
                                     ------
                                     {% endif %}
                                 </td>
+                                {% endif %}
                             </tr>
                             {% endfor %}
                         </tbody>
