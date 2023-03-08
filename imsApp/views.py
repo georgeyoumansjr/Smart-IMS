@@ -62,6 +62,7 @@ def home(request):
             context['detail'] = storeDetail
             context['products'] = StoreProduct.objects.filter(store=storeDetail).count()
             context['sales'] = Invoice.objects.filter(store=storeDetail).count()
+            context['unassigned'] = False
         except Store.DoesNotExist:
             context['page_title'] = 'User Home'
             context['unassigned'] = True
@@ -392,7 +393,7 @@ def delete_product(request):
 #Inventory
 # @admin_only
 @login_required
-def inventory(request):
+def inventory(request,pk=None):
     context['page_title'] = 'Inventory'
     if request.user.is_superuser:
         products = Product.objects.all()
