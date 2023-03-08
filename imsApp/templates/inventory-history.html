@@ -10,20 +10,27 @@
             </div>
         </div>
         <div class="card-body">
-            <div class="conteiner-fluid">
-                <fieldset class="border-bottom">
-                    <legend>Product Details</legend>
-                    <dl>
-                        <dt class="tex-muted">Code</dt>
-                        <dd class="ps-4">{{ product.code }}</dd>
-                        <dt class="tex-muted">Name</dt>
-                        <dd class="ps-4">{{ product.name }}</dd>
-                        <dt class="tex-muted">Description</dt>
-                        <dd class="ps-4">{{ product.description }}</dd>
-                        <dt class="tex-muted">Price</dt>
-                        <dd class="ps-4">{{ product.price|intcomma }}</dd>
-                    </dl>
-                </fieldset>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-8 col-md-8">
+                        <fieldset class="border-bottom">
+                            <legend>Product Details</legend>
+                            <dl>
+                                <dt class="tex-muted">Code</dt>
+                                <dd class="ps-4">{{ product.code }}</dd>
+                                <dt class="tex-muted">Name</dt>
+                                <dd class="ps-4">{{ product.name }}</dd>
+                                <dt class="tex-muted">Description</dt>
+                                <dd class="ps-4">{{ product.description }}</dd>
+                                <dt class="tex-muted">Price</dt>
+                                <dd class="ps-4">{{ product.price|intcomma }}</dd>
+                            </dl>
+                        </fieldset>
+                    </div>
+                    <div class="col-lg-4 col-md-4">
+                        <img class="img img-fluid img-rounded" src="{{ product.image.url }}" alt="{{ product.name }}">
+                    </div>
+                </div>
                 <fieldset>
                     <legend>History</legend>
                     <table class="table table-bordered" id="stock-tbl">

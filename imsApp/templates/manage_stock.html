@@ -14,7 +14,11 @@
             <select name="store" id="store" class="form-select rounded-0">
                 <option value="" selected="selected" disabled="disabled"></option>
                 {% for choice in store %}
+                {% if choice.id == stock.store.id  %}
+                    <option value="{{ choice.id }}" selected>{{ choice.name }}</option>
+                {% else %}
                     <option value="{{ choice.id }}">{{ choice.name }}</option>
+                {% endif %}
                 {% endfor %}
             </select>
         </div>
