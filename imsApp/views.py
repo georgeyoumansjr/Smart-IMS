@@ -56,11 +56,16 @@ def home(request):
         context['users'] = User.objects.filter(is_superuser=0).count()
         return render(request, 'home.html',context)
     else:
-        storeDetail = Store.objects.get(owner=request.user)
-        context['page_title'] = 'Store Home'
-        context['detail'] = storeDetail
-        context['products'] = StoreProduct.objects.filter(store=storeDetail).count()
-        context['sales'] = Invoice.objects.filter(store=storeDetail).count()
+        try:
+            storeDetail = Store.objects.get(owner=request.user)
+            context['page_title'] = 'Store Home'
+            context['detail'] = storeDetail
+            context['products'] = StoreProduct.objects.filter(store=storeDetail).count()
+            context['sales'] = Invoice.objects.filter(store=storeDetail).count()
+        except Store.DoesNotExist:
+            context['page_title'] = 'User Home'
+            context['unassigned'] = True
+            return render(request,'unassigned.html',context)
 
         return render(request,'homeIndiv.html',context)
 
