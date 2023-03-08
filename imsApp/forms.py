@@ -75,7 +75,7 @@ class UpdatePasswords(PasswordChangeForm):
 class SaveCategory(forms.ModelForm):
     name = forms.CharField(max_length="250")
     description = forms.Textarea()
-    category = forms.ModelChoiceField(queryset=Category.objects.filter(status='1'))
+    status = forms.ChoiceField(choices=[('1','Active'),('2','Inactive')])
 
     class Meta:
         model = Category

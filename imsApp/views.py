@@ -173,6 +173,7 @@ def save_category(request):
             messages.success(request, 'Category has been saved successfully.')
             resp['status'] = 'success'
         else:
+            print(form)
             for fields in form:
                 for error in fields.errors:
                     resp['msg'] += str(error + "<br>")
