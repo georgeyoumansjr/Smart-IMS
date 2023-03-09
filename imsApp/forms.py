@@ -200,13 +200,13 @@ class SaveInvoice(forms.ModelForm):
 
 class SaveInvoiceItem(forms.ModelForm):
     invoice = forms.CharField(max_length=30)
-    product = forms.CharField(max_length=30)
+    storeproduct = forms.CharField(max_length=30)
     quantity = forms.CharField(max_length=100)
     price = forms.CharField(max_length=100)
 
     class Meta:
         model = Invoice_Item
-        fields = ('invoice','product','quantity','price')
+        fields = ('invoice','storeproduct','quantity','price')
 
     def clean_invoice(self):
         iid = self.cleaned_data['invoice']
@@ -217,9 +217,9 @@ class SaveInvoiceItem(forms.ModelForm):
             raise forms.ValidationError("Invoice ID is not valid")
 
     def clean_product(self):
-        pid = self.cleaned_data['product']
+        pid = self.cleaned_data['storeproduct']
         try:
-            product = Product.objects.get(id=pid)
+            product = StoreProduct.objects.get(id=pid)
             return product
         except:
             raise forms.ValidationError("Product is not valid")

@@ -541,7 +541,7 @@ def delete_stock(request):
 @login_required
 def sales_mgt(request):
     context['page_title'] = 'Sales'
-    products = Product.objects.none()
+    products = StoreProduct.objects.none()
     context['stores'] = Store.objects.all()
     context['products'] = products
 
@@ -571,6 +571,18 @@ def get_product(request,pk = None):
     
     return HttpResponse(json.dumps(resp),content_type="application/json")
 
+def get_store_product(request,pk = None):
+    resp = {'status':'failed','data':{},'msg':''}
+    if pk is None:
+        resp['msg'] = 'Product ID is not recognized'
+    else:
+        product = StoreProduct.objects.get(id = pk)
+        resp['data']['product'] = str(product.product.code + " - " + product.__str__())
+        resp['data']['id'] = product.id
+        resp['data']['price'] = product.price
+        resp['status'] = 'success'
+    
+    return HttpResponse(json.dumps(resp),content_type="application/json")
 
 def save_sales(request):
     resp = {'status':'failed', 'msg' : ''}
@@ -585,7 +597,7 @@ def save_sales(request):
             for pid in pids:
                 data = {
                     'invoice':invoice.id,
-                    'product':pid,
+                    'storeproduct':pid,
                     'quantity':request.POST['quantity['+str(pid)+']'],
                     'price':request.POST['price['+str(pid)+']'],
                 }

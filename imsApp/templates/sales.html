@@ -130,7 +130,7 @@
             }
             start_loader()
             $.ajax({
-                url: '{% url "get-product" %}/' + pid,
+                url: '{% url "get-store-product" %}/' + pid,
                 method: "GET",
                 dataType: 'json',
                 error: err => {

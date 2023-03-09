@@ -118,7 +118,7 @@ class Invoice(models.Model):
 
 class Invoice_Item(models.Model):
     invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    storeproduct = models.ForeignKey(StoreProduct, on_delete=models.CASCADE, blank= True, null= True)
     stock = models.ForeignKey(Stock, on_delete=models.CASCADE, blank= True, null= True)
     price = models.FloatField(default=0)
     quantity = models.FloatField(default=0)
