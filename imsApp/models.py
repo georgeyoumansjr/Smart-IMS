@@ -129,11 +129,13 @@ class Invoice_Item(models.Model):
 
 @receiver(models.signals.post_save, sender=Invoice_Item)
 def stock_update(sender, instance, **kwargs):
-    stock = Stock(product = instance.storeproduct.product,store= instance.storeproduct.store, quantity = instance.quantity, type = 2)
-    print(stock)
-    stock.save()
-    # stockID = Stock.objects.last().id
-    Invoice_Item.objects.filter(id= instance.id).update(stock=stock)
+    if instance.storeproduct:
+        stock = Stock(product = instance.storeproduct.product,store= instance.storeproduct.store, quantity = instance.quantity, type = 2)
+        print(stock)
+        stock.save()
+        StoreProduct.objects.get(pk=instance.storeproduct.id).save()
+        # stockID = Stock.objects.last().id
+        Invoice_Item.objects.filter(id= instance.id).update(stock=stock)
 
 @receiver(models.signals.post_delete, sender=Invoice_Item)
 def delete_stock(sender, instance, **kwargs):
