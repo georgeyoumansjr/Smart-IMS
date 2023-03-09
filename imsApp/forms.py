@@ -216,7 +216,7 @@ class SaveInvoiceItem(forms.ModelForm):
         except:
             raise forms.ValidationError("Invoice ID is not valid")
 
-    def clean_product(self):
+    def clean_storeproduct(self):
         pid = self.cleaned_data['storeproduct']
         try:
             product = StoreProduct.objects.get(id=pid)

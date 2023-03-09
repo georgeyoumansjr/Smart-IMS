@@ -127,12 +127,10 @@ class Invoice_Item(models.Model):
         return self.invoice.transaction
 
 
-
-
-
 @receiver(models.signals.post_save, sender=Invoice_Item)
 def stock_update(sender, instance, **kwargs):
-    stock = Stock(product = instance.product, quantity = instance.quantity, type = 2)
+    stock = Stock(product = instance.storeproduct.product,store= instance.storeproduct.store, quantity = instance.quantity, type = 2)
+    print(stock)
     stock.save()
     # stockID = Stock.objects.last().id
     Invoice_Item.objects.filter(id= instance.id).update(stock=stock)
