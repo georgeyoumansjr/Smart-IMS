@@ -58,17 +58,21 @@ def home(request):
     else:
         try:
             storeDetail = Store.objects.get(owner=request.user)
+
             context['page_title'] = 'Store Home'
             context['detail'] = storeDetail
             context['products'] = StoreProduct.objects.filter(store=storeDetail).count()
             context['sales'] = Invoice.objects.filter(store=storeDetail).count()
             context['unassigned'] = False
+            # request.session["ownerOf"] = storeDetail.pk
+            
         except Store.DoesNotExist:
             context['page_title'] = 'User Home'
             context['unassigned'] = True
             return render(request,'unassigned.html',context)
-
-        return render(request,'homeIndiv.html',context)
+        response = render(request,'homeIndiv.html',context)
+        response.set_cookie(key='ownerOf', value=storeDetail.pk)
+        return response
 
 def registerUser(request):
     user = request.user
