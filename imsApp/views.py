@@ -63,8 +63,8 @@ def home(request):
 
             context['page_title'] = 'Store Home'
             context['detail'] = storeDetail
-            context['products'] = StoreProduct.objects.filter(store=storeDetail).count()
-            context['sales'] = Invoice.objects.filter(store=storeDetail).count()
+            context['products'] = len(StoreProduct.objects.filter(store=storeDetail))
+            context['sales'] = len(Invoice.objects.filter(store=storeDetail))
             context['unassigned'] = False
             # request.session["ownerOf"] = storeDetail.pk
             
@@ -219,7 +219,14 @@ def view_store(request,pk=None):
     if not pk is None:
         store = get_object_or_404(Store, pk=pk)
     else:
-        store = get_object_or_404(Store,owner=request.user)
+        storeId = request.COOKIES.get('ownerOf')
+        if storeId:
+            store = get_object_or_404(Store,id=storeId)
+        else:
+            logout(request)
+            response = redirect('/')
+            response.delete_cookie('ownerOf')
+            return response
     store_products = store.storeproduct_set.all()
 
     return render(request, 'view_store.html', {'page_title':"View Prodcuts to Store",'store': store, 'store_products': store_products})
