@@ -413,10 +413,16 @@ def inventory(request,pk=None):
         products = Product.objects.all()
         context['products'] = products
     else:
-        store = Store.objects.get(owner=request.user)
-        products = StoreProduct.objects.filter(store=store)
-        context['products'] = products
-        context['isuser'] = True
+        storeId = request.COOKIES.get('ownerOf')
+        if storeId:
+            products = StoreProduct.objects.filter(store=storeId)
+            context['products'] = products
+            context['isuser'] = True
+        else:
+            logout(request)
+            response = redirect('/')
+            response.delete_cookie('ownerOf')
+            return response
         
     return render(request, 'inventory.html', context)
 
@@ -436,11 +442,18 @@ def inv_history(request, pk= None):
             context['stocks'] = stocks
         else:
             product = Product.objects.get(id = pk)
-            store = Store.objects.get(owner=request.user)
-            stocks = Stock.objects.filter(product = product,store=store ).all()
-            context['product'] = product
-            context['stocks'] = stocks
-            context['isuser'] = True
+            # store = Store.objects.get(owner=request.user)
+            storeId = request.COOKIES.get('ownerOf')
+            if storeId:
+                stocks = Stock.objects.filter(product = product,store=storeId).all()
+                context['product'] = product
+                context['stocks'] = stocks
+                context['isuser'] = True
+            else:
+                logout(request)
+                response = redirect('/')
+                response.delete_cookie('ownerOf')
+                return response
 
         return render(request, 'inventory-history.html', context )
 
@@ -645,11 +658,17 @@ def invoices(request):
 
 @login_required
 def ownInvoice(request):
-    my_cookie_value = request.COOKIES.get('ownerOf')
-    store = Store.objects.get(id=my_cookie_value)
-    invoice = Invoice.objects.filter(store=store)
-    context['page_title'] = store.name + " Invoices"
-    context['invoices'] = invoice
+    storeId = request.COOKIES.get('ownerOf')
+    # store = Store.objects.get(id=my_cookie_value)
+    if storeId:
+        invoice = Invoice.objects.filter(store=storeId)
+        context['page_title'] = "Invoices of The Store"
+        context['invoices'] = invoice
+    else:
+        logout(request)
+        response = redirect('/')
+        response.delete_cookie('ownerOf')
+        return response
 
     return render(request, 'invoices.html', context)
 
