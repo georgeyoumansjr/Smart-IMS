@@ -59,7 +59,7 @@ def home(request):
         return render(request, 'home.html',context)
     else:
         try:
-            storeDetail = Store.objects.get(owner=request.user)
+            storeDetail = Store.objects.select_related('owner').get(owner=request.user)
 
             context['page_title'] = 'Store Home'
             context['detail'] = storeDetail
