@@ -43,7 +43,9 @@ def login_user(request):
 #Logout
 def logoutuser(request):
     logout(request)
-    return redirect('/')
+    response = redirect('/')
+    response.delete_cookie('ownerOf')
+    return response
 
 @login_required
 def home(request):
@@ -636,7 +638,8 @@ def invoices(request):
 
 @login_required
 def ownInvoice(request):
-    store = Store.objects.get(owner=request.user)
+    my_cookie_value = request.COOKIES.get('ownerOf')
+    store = Store.objects.get(id=my_cookie_value)
     invoice = Invoice.objects.filter(store=store)
     context['page_title'] = store.name + " Invoices"
     context['invoices'] = invoice
