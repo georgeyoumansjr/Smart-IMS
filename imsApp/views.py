@@ -13,6 +13,7 @@ from imsApp.forms import SaveStock, UserRegistration, UpdateProfile, UpdatePassw
 from imsApp.models import Category, Product, Stock, Invoice, Invoice_Item,Store, StoreProduct
 from cryptography.fernet import Fernet
 from django.conf import settings
+from notifications.signals import notify
 import base64
 from .auth import admin_only
 
@@ -34,6 +35,9 @@ def login_user(request):
             if user.is_active:
                 login(request, user)
                 resp['status']='success'
+                if not user.is_superuser:
+                    admin = User.objects.get(is_superuser=True)
+                    notify.send(sender=user,recipient=admin, verb=user.username+ " just signed In")
             else:
                 resp['msg'] = "Incorrect username or password"
         else:
