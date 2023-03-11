@@ -179,7 +179,7 @@ def save_category(request):
             messages.success(request, 'Category has been saved successfully.')
             resp['status'] = 'success'
         else:
-            print(form)
+            # print(form)
             for fields in form:
                 for error in fields.errors:
                     resp['msg'] += str(error + "<br>")
@@ -266,9 +266,7 @@ def manage_store_product(request,pk=None,pid=None):
         return redirect('store-detail')
     context['store'] = Store.objects.get(id=pk)
     context['products'] = Product.objects.all()
-    # print('here')
-    # print(pid)
-    # print(pk)
+    
     if pid:
         storeP = StoreProduct.objects.get(id = pid)
         store = storeP.store
@@ -413,9 +411,9 @@ def inventory(request,pk=None):
         products = Product.objects.all()
         context['products'] = products
     else:
-        storeId = request.COOKIES.get('ownerOf')
-        if storeId:
-            products = StoreProduct.objects.filter(store=storeId)
+        store_id = request.COOKIES.get('ownerOf')
+        if store_id and store_id.isdigit():
+            products = StoreProduct.objects.select_related('product', 'store').filter(store=store_id)
             context['products'] = products
             context['isuser'] = True
         else:
@@ -615,7 +613,7 @@ def save_sales(request):
     id = 2
     if request.method == 'POST':
         pids = request.POST.getlist('pid[]')
-        print(pids)
+        # print(pids)
         invoice_form = SaveInvoice(request.POST)
         if invoice_form.is_valid():
             invoice_form.save()
