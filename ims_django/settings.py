@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'notifications',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'imsApp.apps.ImsappConfig',
