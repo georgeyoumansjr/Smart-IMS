@@ -6,6 +6,25 @@
             /* Margin to fix overlapping fixed navbar */
             margin-top: 58px;
         }
+
+        .notification {
+            color: white;
+            text-decoration: none;
+            padding: 15px 26px;
+            position: relative;
+            display: inline-block;
+            border-radius: 2px;
+        }
+        
+        .notification .badge {
+            position: absolute;
+            top: 2px;
+            right: 30px;
+            padding: 5px 10px;
+            border-radius: 50%;
+            background-color: red;
+            color: white;
+        }
         
         @media (max-width: 991px) {
             #intro {
@@ -13,6 +32,9 @@
                 margin-top: 45px;
             }
         }
+
+  
+
     </style>
 
     <!-- Navbar -->
@@ -69,7 +91,17 @@
                 <ul class="navbar-nav d-flex flex-row">
                     {% if user.id %} {% if user.profile.user_type == 1 %} {% endif %}
                     <li class="nav-item me-3 me-lg-0">
-                        {% include 'notificationDrop.html' %}
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              Dropdown button
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                              <a class="dropdown-item" href="#">Action</a>
+                              <a class="dropdown-item" href="#">Another action</a>
+                              <a class="dropdown-item" href="#">Something else here</a>
+                            </div>
+                          </div>
+                    {% live_notify_list list_class="dropdown-menu" %}
                     </li>
                     <li class="nav-item me-3 me-lg-0">
                         <a class="nav-link" href="{% url 'profile' %}">
